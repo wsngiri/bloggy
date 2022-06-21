@@ -13,27 +13,21 @@ class UserController extends Controller
 
     public function index()
     {
-        if (Auth::user()->role !== 'admin') {
-            abort(403);
-        }
+        $this->authorize('handleAdmin', Auth::user());
         $users = User::get();
         return view('user.index', compact('users'));
     }
 
     public function create()
     {
-        if (Auth::user()->role !== 'admin') {
-            abort(403);
-        }
+        $this->authorize('handleAdmin', Auth::user());
         $user = Auth::user();
         return view('user.create');
     }
 
     public function store(Request $request)
     {
-        if (Auth::user()->role !== 'admin') {
-            abort(403);
-        }
+        $this->authorize('handleAdmin', Auth::user());
         // dd($request->all());
         $request->validate([
             'username' => 'required|unique:users',
@@ -56,17 +50,13 @@ class UserController extends Controller
 
     public function edit(Request $request, $id)
     {
-        if (Auth::user()->role !== 'admin') {
-            abort(403);
-        }
+        $this->authorize('handleAdmin', Auth::user());
         $user = User::find($id);
         return view('user.edit', compact('user'));
     }
     public function update(Request $request, $id)
     {
-        if (Auth::user()->role !== 'admin') {
-            abort(403);
-        }
+        $this->authorize('handleAdmin', Auth::user());
         $user = User::find($id);
         $request->validate([
             'username' => ['required', Rule::unique('users')->ignore($user)],
@@ -85,9 +75,7 @@ class UserController extends Controller
     }
     public function destroy($id)
     {
-        if (Auth::user()->role !== 'admin') {
-            abort(403);
-        }
+        $this->authorize('handleAdmin', Auth::user());
         $post = User::find($id);
         $post->delete();
         return redirect()->route('users.index');
